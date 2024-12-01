@@ -52,7 +52,13 @@ fun SignInScreen(
     LaunchedEffect(key1 = uiState.value) {
         when (uiState.value) {
             SignInState.Success -> {
-                navController.navigate("home")
+                navController.navigate("home") {
+                    //"login" 이라고 하는 route가 있는 것들은 스택에서 제거를 하라...
+                    //  현재 있는 login 페이지를 포함해서!
+                    popUpTo("login") {
+                        inclusive = true
+                    }
+                }
             }
 
             is SignInState.Error -> {
