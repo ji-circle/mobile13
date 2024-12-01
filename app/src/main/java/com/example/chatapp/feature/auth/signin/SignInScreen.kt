@@ -1,5 +1,6 @@
 package com.example.chatapp.feature.auth.signin
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -30,13 +33,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chatapp.R
 
-//controller를 직접 넘겨받는 방식으로 구현
-//https://developer.android.com/training/dependency-injection/hilt-android?hl=ko 링크
 @Composable
 fun SignInScreen(
     navController: NavController
 ) {
-    //뒤에 = hiltViewModel()
     val viewModel: SignInViewModel = hiltViewModel()
     val uiState = viewModel.state.collectAsState()
 
@@ -46,6 +46,24 @@ fun SignInScreen(
 
     var password by remember {
         mutableStateOf("")
+    }
+
+    //에러 처리
+    // 어떤 값이 바뀌었을 때 수행하는 비동기 처리를 담당하는 함수들을 사용해야 함... 그게 LaunchedEffect
+    //  key 값이 바뀔 때마다, recomposition이 될 때 마다 이게 먼저 수행된다
+    val context = LocalContext.current
+    LaunchedEffect(key1 = uiState.value) {
+        //uiState.value의 값에 따라서
+        when (uiState.value) {
+            is SignInState.Error -> {
+                Toast.makeText(context, "Sign In Failed", Toast.LENGTH_SHORT).show()
+            }
+
+            else -> {}
+//            SignInState.Loading -> TODO()
+//            SignInState.Nothing -> TODO()
+//            SignInState.Success -> TODO()
+        }
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -84,7 +102,6 @@ fun SignInScreen(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            //버튼을 눌렀을 때, uiState가 로딩중인 경우에는 버튼이 보이지 않고 로딩이 되는걸 보여주려면
             if (uiState.value == SignInState.Loading) {
                 CircularProgressIndicator()
             } else {

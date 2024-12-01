@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.feature.auth.signin.SignInScreen
 
-//여기서는 viewmodel보다는 navigation을 더 신경쓸것임
 @Composable
 fun MainApp() {
     Surface(
