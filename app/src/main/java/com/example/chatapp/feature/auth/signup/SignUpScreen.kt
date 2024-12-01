@@ -1,4 +1,4 @@
-package com.example.chatapp.feature.auth.signin
+package com.example.chatapp.feature.auth.signup
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -34,12 +34,15 @@ import androidx.navigation.NavController
 import com.example.chatapp.R
 
 @Composable
-fun SignInScreen(
+fun SignUpScreen(
     navController: NavController
 ) {
-    val viewModel: SignInViewModel = hiltViewModel()
+    val viewModel: SignUpViewModel = hiltViewModel()
     val uiState = viewModel.state.collectAsState()
 
+    var name by remember {
+        mutableStateOf("")
+    }
     var email by remember {
         mutableStateOf("")
     }
@@ -48,10 +51,14 @@ fun SignInScreen(
         mutableStateOf("")
     }
 
+    var confirm by remember {
+        mutableStateOf("")
+    }
     val context = LocalContext.current
     LaunchedEffect(key1 = uiState.value) {
         when (uiState.value) {
-            SignInState.Success -> {
+            SignUpState.Success -> {
+                //TODO 이부분 수정해야 하는 거 아닌가?
                 navController.navigate("home") {
                     popUpTo("login") {
                         inclusive = true
@@ -59,13 +66,13 @@ fun SignInScreen(
                 }
             }
 
-            is SignInState.Error -> {
-                Toast.makeText(context, "Sign In Failed", Toast.LENGTH_SHORT).show()
+            is SignUpState.Error -> {
+                Toast.makeText(context, "Sign Up Failed", Toast.LENGTH_SHORT).show()
             }
 
             else -> {}
-//            SignInState.Loading -> TODO()
-//            SignInState.Nothing -> TODO()
+//            SignUpState.Loading -> TODO()
+//            SignUpState.Nothing -> TODO()
         }
     }
 
@@ -83,8 +90,15 @@ fun SignInScreen(
                 contentDescription = null,
                 modifier = Modifier.size(200.dp)
             )
-
             Spacer(modifier = Modifier.size(32.dp))
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(text = "Name") }
+            )
+            Spacer(modifier = Modifier.size(8.dp))
 
             OutlinedTextField(
                 value = email,
@@ -102,31 +116,43 @@ fun SignInScreen(
                 label = { Text(text = "Password") },
                 visualTransformation = PasswordVisualTransformation()
             )
+            Spacer(modifier = Modifier.size(8.dp))
 
+            OutlinedTextField(
+                value = confirm,
+                onValueChange = { confirm = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(text = "Confirm Password") },
+                visualTransformation = PasswordVisualTransformation(),
+
+                //위의 password와 이 칸에 입력한 게 일치할 경우에만 ~~ 하게 할거면
+                // 두 칸 다 비어있지 않은데 입력된 게 서로 다르면 에러니까!! 테두리가 붉은색이 됨
+                isError = password.isNotEmpty() && confirm.isNotEmpty() && confirm != password
+            )
             Spacer(modifier = Modifier.size(16.dp))
 
-            if (uiState.value == SignInState.Loading) {
+            if (uiState.value == SignUpState.Loading) {
                 CircularProgressIndicator()
             } else {
                 Button(
                     onClick = {
-                        viewModel.signIn(
+                        viewModel.SignUp(
                             email,
                             password
                         )
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+
+                    //모든 값들이 다 입력되어야 sign up 버튼이 활성화되게 하려면
+                    enabled = name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirm.isNotEmpty() && password == confirm
                 ) {
-                    Text(text = stringResource(id = R.string.signin))
+                    Text(text = stringResource(id = R.string.signUp))
                 }
 
                 TextButton(
-                    onClick = {
-                        //navigate( route ) 선택
-                        navController.navigate("signup")
-                    }
+                    onClick = {}
                 ) {
-                    Text(text = stringResource(id = R.string.signintext))
+                    Text(text = stringResource(id = R.string.signuptext))
                 }
             }
         }
