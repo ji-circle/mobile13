@@ -24,6 +24,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
 
+                    //위에서 email, password로 계정을 만들고,
                     //해당되는 그 user에 profile을 업데이트할건데
                     task.result.user?.let {
                         it.updateProfile(
@@ -34,8 +35,6 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
                             _state.value = SignUpState.Success
                         }
                     }
-
-                    _state.value = SignUpState.Success
                 } else {
                     _state.value = SignUpState.Error
                 }
