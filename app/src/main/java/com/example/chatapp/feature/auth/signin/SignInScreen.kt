@@ -69,7 +69,7 @@ fun SignInScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                //텍스트 입력받는 부분의 너비... 위에서 주어진 패딩 내에서 채운다
+                //텍스트 입력받는 부분의 너비... 위에서 주어진 패딩 내에서 채운다.
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Email") }
             )
