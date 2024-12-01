@@ -24,18 +24,14 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
 
-                    //해당되는 그 user에 profile을 업데이트할건데
                     task.result.user?.let {
                         it.updateProfile(
                             com.google.firebase.auth.UserProfileChangeRequest.Builder()
                                 .setDisplayName(name).build()
                         ).addOnCompleteListener {
-                            //complete 되어야 state를 success로 만든다
                             _state.value = SignUpState.Success
                         }
                     }
-
-                    _state.value = SignUpState.Success
                 } else {
                     _state.value = SignUpState.Error
                 }

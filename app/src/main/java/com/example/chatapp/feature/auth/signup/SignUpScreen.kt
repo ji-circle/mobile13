@@ -58,7 +58,6 @@ fun SignUpScreen(
     LaunchedEffect(key1 = uiState.value) {
         when (uiState.value) {
             SignUpState.Success -> {
-                //sign up 하면 home으로 간다
                 navController.navigate("home") {
                     popUpTo("login") {
                         inclusive = true
