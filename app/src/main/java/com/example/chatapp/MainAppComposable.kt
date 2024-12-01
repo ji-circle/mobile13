@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.feature.auth.signin.SignInScreen
+import com.example.chatapp.feature.home.HomeScreen
 
 @Composable
 fun MainApp() {
@@ -21,9 +22,11 @@ fun MainApp() {
             startDestination = "login"
         ) {
             composable(route = "login") {
-                SignInScreen(
-                    navController = navController
-                )
+                SignInScreen(navController = navController)
+            }
+            //HomeScreen 추가
+            composable(route = "home") {
+                HomeScreen(navController = navController)
             }
 //            composable(route = "signup") {
 //

@@ -48,13 +48,13 @@ fun SignInScreen(
         mutableStateOf("")
     }
 
-    //에러 처리
-    // 어떤 값이 바뀌었을 때 수행하는 비동기 처리를 담당하는 함수들을 사용해야 함... 그게 LaunchedEffect
-    //  key 값이 바뀔 때마다, recomposition이 될 때 마다 이게 먼저 수행된다
     val context = LocalContext.current
     LaunchedEffect(key1 = uiState.value) {
-        //uiState.value의 값에 따라서
         when (uiState.value) {
+            SignInState.Success -> {
+                navController.navigate("home")
+            }
+
             is SignInState.Error -> {
                 Toast.makeText(context, "Sign In Failed", Toast.LENGTH_SHORT).show()
             }
@@ -62,7 +62,6 @@ fun SignInScreen(
             else -> {}
 //            SignInState.Loading -> TODO()
 //            SignInState.Nothing -> TODO()
-//            SignInState.Success -> TODO()
         }
     }
 
