@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-//힐트뷰모델 적어주기
+//힐트뷰모델 적어주기.
 @HiltViewModel
 class SignInViewModel @Inject constructor() : ViewModel() {
     //nothing으로부터 시작해서...
