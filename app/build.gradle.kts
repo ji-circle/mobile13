@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    //파이어베이스
+    id("com.google.gms.google-services")
+    //hilt
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -60,6 +65,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,4 +73,28 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //파이어베이스
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    //hilt
+    //implementation("com.google.dagger:hilt-android:2.51.1")
+    //윗줄 먼저 실행, 그 뒤에 plugins의 kapt 설치,
+    //kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    //그 뒤에 윗줄 실행, 그 뒤에 plugins의 dagger.hilt 설치
+    //kapt {
+    //    correctErrorTypes = true
+    //}
+    // 그뒤에 위에 줄 실행
+    //implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    //그 뒤에 위에 줄 실행
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+}
+
+//hilt
+kapt {
+    correctErrorTypes = true
 }

@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,14 +26,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chatapp.R
 
 //controller를 직접 넘겨받는 방식으로 구현
+//https://developer.android.com/training/dependency-injection/hilt-android?hl=ko 링크
 @Composable
 fun SignInScreen(
     navController: NavController
 ) {
+    //뒤에 = hiltViewModel()
+    val viewModel: SignInViewModel = hiltViewModel()
+    val uiState = viewModel.state.collectAsState()
+
     var email by remember {
         mutableStateOf("")
     }
@@ -76,17 +84,27 @@ fun SignInScreen(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(id = R.string.signin))
-            }
+            //버튼을 눌렀을 때, uiState가 로딩중인 경우에는 버튼이 보이지 않고 로딩이 되는걸 보여주려면
+            if (uiState.value == SignInState.Loading) {
+                CircularProgressIndicator()
+            } else {
+                Button(
+                    onClick = {
+                        viewModel.signIn(
+                            email,
+                            password
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(id = R.string.signin))
+                }
 
-            TextButton(
-                onClick = {}
-            ) {
-                Text(text = stringResource(id = R.string.signintext))
+                TextButton(
+                    onClick = {}
+                ) {
+                    Text(text = stringResource(id = R.string.signintext))
+                }
             }
         }
     }
