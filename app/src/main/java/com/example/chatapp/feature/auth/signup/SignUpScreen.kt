@@ -58,9 +58,12 @@ fun SignUpScreen(
     LaunchedEffect(key1 = uiState.value) {
         when (uiState.value) {
             SignUpState.Success -> {
-                //TODO 이부분 수정해야 하는 거 아닌가?
+                //sign up 하면 home으로 간다
                 navController.navigate("home") {
                     popUpTo("login") {
+                        inclusive = true
+                    }
+                    popUpTo("signup") {
                         inclusive = true
                     }
                 }
@@ -125,8 +128,6 @@ fun SignUpScreen(
                 label = { Text(text = "Confirm Password") },
                 visualTransformation = PasswordVisualTransformation(),
 
-                //위의 password와 이 칸에 입력한 게 일치할 경우에만 ~~ 하게 할거면
-                // 두 칸 다 비어있지 않은데 입력된 게 서로 다르면 에러니까!! 테두리가 붉은색이 됨
                 isError = password.isNotEmpty() && confirm.isNotEmpty() && confirm != password
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -136,14 +137,14 @@ fun SignUpScreen(
             } else {
                 Button(
                     onClick = {
-                        viewModel.SignUp(
+                        viewModel.signUp(
+                            name,
                             email,
                             password
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
 
-                    //모든 값들이 다 입력되어야 sign up 버튼이 활성화되게 하려면
                     enabled = name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirm.isNotEmpty() && password == confirm
                 ) {
                     Text(text = stringResource(id = R.string.signUp))

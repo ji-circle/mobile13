@@ -7,23 +7,34 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-//힐트뷰모델 적어주기
 @HiltViewModel
 class SignUpViewModel @Inject constructor() : ViewModel() {
     private val _state = MutableStateFlow<SignUpState>(SignUpState.Nothing)
 
     val state = _state.asStateFlow()
 
-    fun SignUp(
+    fun signUp(
+        name: String,
         email: String,
         password: String
     ) {
-        //SignUp을 시도하는 순간 state를 loading으로 바꿀것임
         _state.value = SignUpState.Loading
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+
+                    //해당되는 그 user에 profile을 업데이트할건데
+                    task.result.user?.let {
+                        it.updateProfile(
+                            com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                                .setDisplayName(name).build()
+                        ).addOnCompleteListener {
+                            //complete 되어야 state를 success로 만든다
+                            _state.value = SignUpState.Success
+                        }
+                    }
+
                     _state.value = SignUpState.Success
                 } else {
                     _state.value = SignUpState.Error

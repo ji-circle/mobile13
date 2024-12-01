@@ -122,7 +122,6 @@ fun SignInScreen(
 
                 TextButton(
                     onClick = {
-                        //navigate( route ) 선택
                         navController.navigate("signup")
                     }
                 ) {
