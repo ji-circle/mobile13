@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,9 +39,7 @@ import com.example.chatapp.ui.theme.Purple
 fun HomeScreen(
     navController: NavController
 ) {
-    //여기 추가
     val viewModel = hiltViewModel<HomeViewModel>()
-    //채널을 받아온다
     val channels = viewModel.channels.collectAsState()
 
     val addChannel = remember {
@@ -73,6 +73,20 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
 
+            //목록이니까 lazy로...
+            LazyColumn(
+
+            ) {
+                //리스트를 받아서 리스트에 해당하는 것들을 목록화시킨다
+                items(channels.value) { channel ->
+                    Column {
+                        Text(
+                            text = channel.name,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
         }
         if (addChannel.value) {
             ModalBottomSheet(
@@ -80,8 +94,6 @@ fun HomeScreen(
                 sheetState = sheetState
             ) {
                 AddChannelDialog {
-                    //여기는 addchannelDialog에서 onAddChannel에서 실행되는 부분들
-                    //  하나의 string을 받는거라 it이라고 해도 됨
                     viewModel.addChannel(it)
                     addChannel.value = false
                 }
