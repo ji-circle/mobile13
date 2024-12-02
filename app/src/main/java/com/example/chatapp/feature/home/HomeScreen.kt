@@ -65,9 +65,9 @@ fun HomeScreen(
     val sheetState = rememberModalBottomSheetState()
 
     LaunchedEffect(key1 = uiState.value) {
-        if (uiState.value == SignOutState.LoggedOut){
-            navController.navigate("login"){
-                popUpTo("home"){
+        if (uiState.value == SignOutState.LoggedOut) {
+            navController.navigate("login") {
+                popUpTo("home") {
                     inclusive = true
                 }
             }
@@ -135,7 +135,11 @@ fun HomeScreen(
                 }
 
                 items(channels.value) { channel ->
-                    ChannelItem(channel.name)
+                    //여기 수정
+                    // 람다니까 첫번째 매개변수 그대로 두고, 람다는 밖으로 빼내도 됨
+                    ChannelItem(channel.name) {
+                        navController.navigate("chat/${channel.id}&${channel.name}")
+                    }
                 }
             }
         }
@@ -153,8 +157,12 @@ fun HomeScreen(
     }
 }
 
+//각각이 채널 하나씩임... 채팅방 하나씩.
 @Composable
-fun ChannelItem(channelName: String) {
+fun ChannelItem(
+    channelName: String,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 2.dp)
@@ -162,7 +170,8 @@ fun ChannelItem(channelName: String) {
             .clip(RoundedCornerShape(16.dp))
             .background(DarkGray)
             .clickable {
-
+                //여기 수정
+                onClick()
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
