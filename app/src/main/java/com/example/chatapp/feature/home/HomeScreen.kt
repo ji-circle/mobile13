@@ -64,13 +64,9 @@ fun HomeScreen(
 
     val sheetState = rememberModalBottomSheetState()
 
-    //로그아웃 시 화면도 다시 돌아가게 만들기
-    //어떤 값이 변할때에만 실행되는 함수를 적어주기
     LaunchedEffect(key1 = uiState.value) {
-        //uistate가 nothing이었다가 loggedOut이 되었다면
         if (uiState.value == SignOutState.LoggedOut){
             navController.navigate("login"){
-                //이 화면도 포함해서 home의 스택은 모두 제거
                 popUpTo("home"){
                     inclusive = true
                 }

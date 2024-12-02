@@ -17,7 +17,6 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     val _channels = MutableStateFlow<List<Channel>>(emptyList())
     val channels = _channels.asStateFlow()
 
-    //추가
     private val _state = MutableStateFlow<SignOutState>(SignOutState.Nothing)
     val state = _state.asStateFlow()
 
@@ -45,16 +44,13 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             }
     }
 
-    //추가
     fun signOut() {
-        //이건 비동기 함수가 아니라서, add, listener 추가 등이 없음.
         FirebaseAuth.getInstance().signOut()
         _state.value = SignOutState.LoggedOut
     }
 
 }
 
-//signOutState 만들기
 sealed class SignOutState {
     object Nothing : SignOutState()
     object LoggedOut : SignOutState()
