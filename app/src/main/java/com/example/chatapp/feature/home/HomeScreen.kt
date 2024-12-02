@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chatapp.ui.theme.DarkGray
 import com.example.chatapp.ui.theme.Purple
+import kotlin.math.sign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,12 +56,29 @@ fun HomeScreen(
 ) {
     val viewModel = hiltViewModel<HomeViewModel>()
     val channels = viewModel.channels.collectAsState()
+    val uiState = viewModel.state.collectAsState()
 
     val addChannel = remember {
         mutableStateOf(false)
     }
 
     val sheetState = rememberModalBottomSheetState()
+
+    //로그아웃 시 화면도 다시 돌아가게 만들기
+    //어떤 값이 변할때에만 실행되는 함수를 적어주기
+    LaunchedEffect(key1 = uiState.value) {
+        //uistate가 nothing이었다가 loggedOut이 되었다면
+        if (uiState.value == SignOutState.LoggedOut){
+            navController.navigate("login"){
+                //이 화면도 포함해서 home의 스택은 모두 제거
+                popUpTo("home"){
+                    inclusive = true
+                }
+            }
+        }
+    }
+
+
     Scaffold(
         floatingActionButton = {
             Box(
@@ -90,15 +109,12 @@ fun HomeScreen(
             LazyColumn(
 
             ) {
-                //화면 상단에 제목 넣기, 로그아웃 넣기
-                //아이템 하나 만들기
                 item {
                     Row(
                         modifier = Modifier.padding(16.dp),
-                        //옆과 세로위치 동일하게... 중앙에 가게
                         verticalAlignment = Alignment.CenterVertically,
 
-                    ) {
+                        ) {
                         Text(
                             text = "Messages",
                             color = Color.Gray,
@@ -106,19 +122,16 @@ fun HomeScreen(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Black
                             ),
-                            //messages가 icon을 제외한 모든 공간을 다 차지하게 하려면
-                            //  (= 아이콘이 가장 오른쪽으로 밀리고, message의 크기는 딱히 늘어나진 않음)
                             modifier = Modifier.weight(1f)
                         )
                         IconButton(
                             onClick = {
-
+                                viewModel.signOut()
                             }
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = null,
-                                //아이콘의 색 변경은 tint
                                 tint = Color.Gray
                             )
                         }
@@ -126,9 +139,7 @@ fun HomeScreen(
                 }
 
                 items(channels.value) { channel ->
-                    //여기 수정
                     ChannelItem(channel.name)
-//
                 }
             }
         }
@@ -148,7 +159,6 @@ fun HomeScreen(
 
 @Composable
 fun ChannelItem(channelName: String) {
-    //채널의 앞글자를 따서 동그랗게 아이콘을 만들고 채널 이름을 보여주게...
     Row(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 2.dp)
@@ -158,10 +168,8 @@ fun ChannelItem(channelName: String) {
             .clickable {
 
             },
-        // 박스 내의 채널이름 텍스트가 위쪽에 치우쳐져있었음... 그거 수정
         verticalAlignment = Alignment.CenterVertically
     ) {
-        //텍스트 앞에 원이 있고, 그 안에 첫글자 넣는거
         Box(
             modifier = Modifier
                 .padding(8.dp)
@@ -170,7 +178,6 @@ fun ChannelItem(channelName: String) {
                 .background(Color.Yellow.copy(alpha = 0.3f))
         ) {
             Text(
-                //채널 이름의 첫번째 글자를 따고, 그거의 대문자 형태로
                 text = channelName[0].uppercase(),
                 color = Color.White,
                 style = TextStyle(
@@ -181,7 +188,6 @@ fun ChannelItem(channelName: String) {
             )
         }
 
-        //채팅방 이름 부분
         Text(
             text = channelName,
             modifier = Modifier.padding(8.dp),
