@@ -2,13 +2,18 @@ package com.example.chatapp.feature.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -34,6 +39,9 @@ import com.example.chatapp.R
 import com.example.chatapp.feature.home.ChannelItem
 import com.example.chatapp.feature.model.Message
 import com.example.chatapp.ui.theme.DarkGray
+import com.example.chatapp.ui.theme.Purple
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun ChatScreen(
@@ -119,10 +127,8 @@ fun ChatMessages(
                 }
             }
             items(messages) { msg ->
-                Text(
-                    text = msg.message,
-                    color = Color.White
-                )
+                //여기에 chat bubble 만들것임
+                ChatBubble(message = msg)
             }
         }
 
@@ -152,6 +158,62 @@ fun ChatMessages(
                     contentDescription = null
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ChatBubble(message: Message) {
+    //다른 사람이 보냈을 땐 왼쪽, 내가 보냈을 떈 오른쪽에
+    //이게 내가 보낸것인지... boolean
+    val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
+    val bubbleColor = if (isCurrentUser) {
+        Purple
+    } else {
+        DarkGray
+    }
+    Box(
+        //버블이 max가 아니고, 해당 차지하는 공간을 먼저 만들어야 하니까.. box가 max
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        //왼쪽인지 오른쪽인지를 currentUser 인지 아닌지를 기준으로
+        val alignment = if (!isCurrentUser) Alignment.CenterStart else Alignment.CenterEnd
+
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .background(
+                    color = bubbleColor,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                //위에서 정의한 alignment를 줄것임
+                .align(alignment),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (!isCurrentUser) {
+                Image(
+                    painter = painterResource(R.drawable.person),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+            }
+            Text(
+                //trim : 양 끝에 있는 것들을 trim해냄
+                text = message.message.trim(),
+                color = Color.White,
+                modifier = Modifier
+                    .background(
+                        color = bubbleColor,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(16.dp)
+            )
+
         }
     }
 }
