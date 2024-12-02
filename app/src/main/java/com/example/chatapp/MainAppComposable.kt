@@ -17,7 +17,6 @@ fun MainApp() {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        //로그인이 되어있으면 "login"으로 가지 말고 바로 home으로 가라는걸 추가
         val navController = rememberNavController()
         val currentUser = FirebaseAuth.getInstance().currentUser
 
