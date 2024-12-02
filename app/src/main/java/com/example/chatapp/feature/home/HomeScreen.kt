@@ -137,7 +137,10 @@ fun HomeScreen(
                 items(channels.value) { channel ->
                     //여기 수정
                     // 람다니까 첫번째 매개변수 그대로 두고, 람다는 밖으로 빼내도 됨
-                    ChannelItem(channel.name) {
+                    ChannelItem(
+                        channel.name,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+                    ) {
                         navController.navigate("chat/${channel.id}&${channel.name}")
                     }
                 }
@@ -161,11 +164,12 @@ fun HomeScreen(
 @Composable
 fun ChannelItem(
     channelName: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 2.dp)
+        modifier = modifier
+//            .padding(horizontal = 16.dp, vertical = 2.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(DarkGray)
