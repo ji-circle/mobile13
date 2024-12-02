@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,7 +74,19 @@ fun HomeScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
-
+            //목록이니까 lazy로...
+            LazyColumn(
+            ) {
+                //리스트를 받아서 리스트에 해당하는 것들을 목록화시킨다
+                items(channels.value) { channel ->
+                    Column {
+                        Text(
+                            text = channel.name,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
         }
         if (addChannel.value) {
             ModalBottomSheet(
