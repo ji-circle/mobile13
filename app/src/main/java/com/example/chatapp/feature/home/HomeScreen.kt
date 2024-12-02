@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chatapp.ui.theme.Purple
 
@@ -35,6 +37,11 @@ import com.example.chatapp.ui.theme.Purple
 fun HomeScreen(
     navController: NavController
 ) {
+    //여기 추가
+    val viewModel = hiltViewModel<HomeViewModel>()
+    //채널을 받아온다
+    val channels = viewModel.channels.collectAsState()
+
     val addChannel = remember {
         mutableStateOf(false)
     }
@@ -73,6 +80,9 @@ fun HomeScreen(
                 sheetState = sheetState
             ) {
                 AddChannelDialog {
+                    //여기는 addchannelDialog에서 onAddChannel에서 실행되는 부분들
+                    //  하나의 string을 받는거라 it이라고 해도 됨
+                    viewModel.addChannel(it)
                     addChannel.value = false
                 }
             }
