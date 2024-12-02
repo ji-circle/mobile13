@@ -10,17 +10,22 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.feature.auth.signin.SignInScreen
 import com.example.chatapp.feature.auth.signup.SignUpScreen
 import com.example.chatapp.feature.home.HomeScreen
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun MainApp() {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
+        //로그인이 되어있으면 "login"으로 가지 말고 바로 home으로 가라는걸 추가
         val navController = rememberNavController()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        val start = if (currentUser != null) "home" else "login"
 
         NavHost(
             navController = navController,
-            startDestination = "login"
+            startDestination = start
         ) {
 
             composable(route = "login") {
