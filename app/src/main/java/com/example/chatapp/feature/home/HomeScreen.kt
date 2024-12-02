@@ -67,15 +67,12 @@ fun HomeScreen(
         ) {
 
         }
-        //추가함
         if (addChannel.value) {
             ModalBottomSheet(
                 onDismissRequest = {},
                 sheetState = sheetState
             ) {
-                //AddChannelDialog() 인데, 람다함수 하나만 받으니 { }
                 AddChannelDialog {
-                    //확인 누르면 꺼지게
                     addChannel.value = false
                 }
             }
@@ -83,17 +80,14 @@ fun HomeScreen(
     }
 }
 
-//하단의 모달 창 안에 넣을 것들을 여기에...
 @Composable
 fun AddChannelDialog(
     onAddChannel: (String) -> Unit
 ) {
-    //이 다이얼로그 안에서의 상태...
     var channelName by remember {
         mutableStateOf("")
     }
     Column(
-        //여기에 modifier 안 주면 가로 전체 채우지 못함
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -104,7 +98,6 @@ fun AddChannelDialog(
             value = channelName,
             onValueChange = { channelName = it },
             label = { Text(text = "Channel Name") },
-            //싱글 라인만 넣을 수 있게
             singleLine = true
         )
         Spacer(modifier = Modifier.padding(8.dp))
